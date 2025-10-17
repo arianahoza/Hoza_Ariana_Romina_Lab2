@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Hoza_Ariana_Romina_Lab2.Data;
 using Hoza_Ariana_Romina_Lab2.Models;
 
-namespace Hoza_Ariana_Romina_Lab2.Pages.Books
+namespace Hoza_Ariana_Romina_Lab2.Pages.Categories
 {
     public class DetailsModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace Hoza_Ariana_Romina_Lab2.Pages.Books
             _context = context;
         }
 
-        public Book Book { get; set; } = default!;
+        public Category Category { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,18 +28,15 @@ namespace Hoza_Ariana_Romina_Lab2.Pages.Books
                 return NotFound();
             }
 
-            Book = await _context.Book
-                .Include(b => b.Publisher) // include editura
-                .Include(b => b.Author)    // include autorul
-                .Include(b => b.BookCategories) // include legăturile carte-categorie
-                    .ThenInclude(bc => bc.Category) // include efectiv categoriile
-                .FirstOrDefaultAsync(m => m.ID == id);
-
-            if (Book == null)
+            var category = await _context.Category.FirstOrDefaultAsync(m => m.ID == id);
+            if (category == null)
             {
                 return NotFound();
             }
-
+            else
+            {
+                Category = category;
+            }
             return Page();
         }
     }
